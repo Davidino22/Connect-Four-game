@@ -1,0 +1,94 @@
+body {
+  background-color: #7945ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table {
+  background-color: white;
+
+  border-radius: 25px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  width: 600px;
+}
+
+.cell {
+  margin: 8px;
+  height: 60px;
+  width: 60px;
+
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cellRed {
+  background-color: red;
+  animation: drop 2s ease forwards;
+}
+
+.headerRow {
+  display: flex;
+
+  flex-direction: row;
+  width: 600px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+}
+
+.cellYellow {
+  background-color: yellow;
+  animation: drop 2s ease forwards;
+}
+
+.restartButton {
+  position: absolute;
+  left: 1200px;
+  top: 10px;
+  width: 120px;
+  height: 60px;
+  border-radius: 8px;
+  background-color: #5d2cd3;
+  color: aliceblue;
+}
+
+.pseudotable {
+  position: absolute;
+  top: 76px;
+}
+
+.pseudocell {
+  margin: 8px;
+  height: 60px;
+  width: 60px;
+  background-color: blue;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 5;
+}
+
+@keyframes drop {
+  0% {
+    /*opacity: 0;*/
+    transform: translateY(-420px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
