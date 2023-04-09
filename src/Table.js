@@ -2,68 +2,83 @@ import React, { useEffect, useState } from 'react';
 import './Table.css';
 import Timer from './Timer';
 import WinningNotification from './WinningNotification';
+import { BsFillEmojiSmileFill } from 'react-icons/bs';
 
 export default function Table() {
-  const [table, setTable] = useState({
-    table: [
-      [null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null],
-    ],
-  });
 
-  const [seconds, setSeconds] = useState(30);
+    const [table, setTable] = useState({
+      table: [
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null],
+      ],
+    });
 
-  const [player, setPlayer] = useState(true);
+    const [seconds, setSeconds] = useState(30);
 
-  const [showNotification, setShowNotification] = useState(false);
+    const [player, setPlayer] = useState(true);
 
-  const [winner, setWinner] = useState(null);
+    const [showNotification, setShowNotification] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds((seconds) => seconds - 1);
-    }, 1000);
+    const [winner, setWinner] = useState(null);
 
-    return () => clearInterval(interval);
-  }, []);
+    const [winningPlayerOne, setWinningPlayerOne] = useState(0);
+    const [winningPlayerTwo, setWinningPlayerTwo] = useState(0);
 
-  useEffect(() => {
-    if (seconds < 0) {
-      setPlayer(!player);
-      setSeconds(30);
-    }
-  }, [seconds]);
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setSeconds((seconds) => seconds - 1);
+      }, 1000);
 
-  function dropCoin(number) {
-    let lastEmptyCell;
-    let color;
+      return () => clearInterval(interval);
+    }, []);
 
-    for (let i = 0; i < table.table.length; i++) {
-      if (table.table[i][number] === null) {
-        continue;
+    useEffect(() => {
+      if (seconds < 0) {
+        setPlayer(!player);
+        setSeconds(30);
+      }
+    }, [seconds]);
+
+    function dropCoin(number) {
+      let lastEmptyCell;
+      let color;
+
+      for (let i = 0; i < table.table.length; i++) {
+        if (table.table[i][number] === null) {
+          continue;
+        }
+
+        lastEmptyCell = i - 1;
+
+        break;
+      }
+      if (lastEmptyCell === undefined) {
+        lastEmptyCell = table.table.length - 1;
       }
 
-      lastEmptyCell = i - 1;
+      const newTable = table.table;
 
-      break;
-    }
-    if (lastEmptyCell === undefined) {
-      lastEmptyCell = table.table.length - 1;
-    }
+      player ? (color = 'red') : (color = 'yellow');
+      if (lastEmptyCell >= 0 && lastEmptyCell < newTable.length) {
+        // check if the rank is within the array bounds
+        newTable[lastEmptyCell][number] = color;
+        setTable({ table: newTable });
 
-    const newTable = table.table;
+        if (checkForWin(color, newTable)) {
+          setShowNotification(true);
+          setWinner(color);
+        }
+      }
 
-    player ? (color = 'red') : (color = 'yellow');
-    newTable[lastEmptyCell][number] = color;
-    setTable({ table: newTable });
-
-    if (checkForWin(color, newTable)) {
-      setShowNotification(true);
-      setWinner(color);
+      if (color === 'red') {
+        setWinningPlayerOne(winningPlayerOne + 1);
+      } else {
+        setWinningPlayerTwo(winningPlayerTwo + 1);
+      }
     }
 
     setPlayer(!player);
@@ -156,12 +171,25 @@ export default function Table() {
       <button onClick={restart} className="restartButton">
         restart
       </button>
+      <div className="playerone">
+        <p>Player 1 </p>
+        <BsFillEmojiSmileFill style={{ color: 'red', fontSize: '40px' }} />
+        {winningPlayerOne}
+      </div>
+      <div className="playertwo">
+        <p>Player 2</p>
+        <BsFillEmojiSmileFill style={{ color: 'yellow', fontSize: '40px' }} />
+        {winningPlayerTwo}
+      </div>
+
       <div className="headerRow">
         {[0, 1, 2, 3, 4, 5, 6].map((number) => {
           return (
-            <div className="cell" onClick={() => dropCoin(number)} key={number}>
-              {number}
-            </div>
+            <div
+              className="headcell"
+              onClick={() => dropCoin(number)}
+              key={number}
+            ></div>
           );
         })}
       </div>
@@ -176,36 +204,19 @@ export default function Table() {
                     className={`cell ${element === 'red' ? 'cellRed' : ''} ${
                       element === 'yellow' ? 'cellYellow' : ''
                     }`}
-                  >
-                    {rowIndex},{columnIndex}
-                  </div>
+                  ></div>
                 );
               })}
             </div>
           );
         })}
       </div>
-      <Timer seconds={seconds} player={player} />
-
-      <div className="pseudotable">
-        {table.table.map((row, rowIndex) => {
-          return (
-            <div key={rowIndex} className={`row`}>
-              {row.map((element, columnIndex) => {
-                return (
-                  <div key={columnIndex} className={'pseudocell'}>
-                    {rowIndex},{columnIndex}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-
-      {showNotification && (
-        <WinningNotification color={winner} restart={restart} />
-      )}
+      <Timer seconds={seconds} />
+      <WinningNotification
+        show={showNotification}
+        winner={winner}
+        restart={restart}
+      />
     </div>
   );
 }

@@ -6,8 +6,6 @@ body {
 }
 
 .table {
-  background-color: white;
-
   border-radius: 25px;
 }
 
@@ -16,13 +14,13 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  width: 600px;
+  width: 505px;
 }
 
 .cell {
-  margin: 8px;
-  height: 60px;
-  width: 60px;
+  margin: 5px;
+  height: 63px;
+  width: 65px;
 
   border-radius: 50%;
   cursor: pointer;
@@ -31,16 +29,17 @@ body {
 
 .cellRed {
   background-color: red;
-  animation: drop 2s ease forwards;
+  animation: drop 0.5s ease-in;
 }
 
 .headerRow {
   display: flex;
 
   flex-direction: row;
-  width: 600px;
+  width: 505px;
   justify-content: space-between;
   align-items: center;
+  background-color: lightgoldenrodyellow;
 }
 
 .container {
@@ -53,23 +52,32 @@ body {
 
 .cellYellow {
   background-color: yellow;
-  animation: drop 2s ease forwards;
+  animation: drop 0.5s ease-in;
 }
 
 .restartButton {
   position: absolute;
-  left: 1200px;
+  right: 20px;
   top: 10px;
-  width: 120px;
-  height: 60px;
+  width: 200px;
+  height: 80px;
   border-radius: 8px;
   background-color: #5d2cd3;
   color: aliceblue;
+  border: none;
 }
 
 .pseudotable {
+  color: aquamarine;
   position: absolute;
-  top: 76px;
+  top: 12px;
+  width: 700px;
+  top: 60px;
+  height: 465px;
+  padding: 0px;
+  margin: 0px;
+  z-index: 11;
+  filter: invert(70%) sepia(10%) saturate(1352%) hue-rotate(87deg);
 }
 
 .pseudocell {
@@ -91,4 +99,37 @@ body {
   100% {
     transform: translateY(0px);
   }
+}
+
+.headcell {
+  margin: 5px;
+  height: 63px;
+  width: 65px;
+  background-color: lightgoldenrodyellow;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+.headcell:hover {
+  background-color: rgb(215, 14, 195);
+}
+
+.playerone {
+  position: absolute;
+  top: 300px;
+  left: 30px;
+  width: 200px;
+  height: 200px;
+  border: 2px solid red;
+  background-color: #eaecf1cd;
+}
+
+.playertwo {
+  position: absolute;
+  top: 300px;
+  right: 30px;
+  width: 200px;
+  height: 200px;
+  border: 2px solid red;
+  background-color: #eaecf1cd;
 }
