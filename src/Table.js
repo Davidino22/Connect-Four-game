@@ -37,7 +37,7 @@ export default function Table() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [showNotification]); //showNotification as dependency
 
   useEffect(() => {
     if (seconds < 0) {
