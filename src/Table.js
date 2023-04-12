@@ -5,79 +5,81 @@ import WinningNotification from './WinningNotification';
 import { BsFillEmojiSmileFill } from 'react-icons/bs';
 
 export default function Table() {
+  const [table, setTable] = useState({
+    table: [
+      [null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null],
+    ],
+  });
 
-    const [table, setTable] = useState({
-      table: [
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-      ],
-    });
+  const [seconds, setSeconds] = useState(30);
 
-    const [seconds, setSeconds] = useState(30);
+  const [player, setPlayer] = useState(true);
 
-    const [player, setPlayer] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
 
-    const [showNotification, setShowNotification] = useState(false);
+  const [winnerColor, setWinnerColor] = useState(null);
 
-    const [winner, setWinner] = useState(null);
+  const [winningPlayerOne, setWinningPlayerOne] = useState(0);
+  const [winningPlayerTwo, setWinningPlayerTwo] = useState(0);
 
-    const [winningPlayerOne, setWinningPlayerOne] = useState(0);
-    const [winningPlayerTwo, setWinningPlayerTwo] = useState(0);
-
-    useEffect(() => {
-      const interval = setInterval(() => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (showNotification === false) {
         setSeconds((seconds) => seconds - 1);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-      if (seconds < 0) {
-        setPlayer(!player);
-        setSeconds(30);
-      }
-    }, [seconds]);
-
-    function dropCoin(number) {
-      let lastEmptyCell;
-      let color;
-
-      for (let i = 0; i < table.table.length; i++) {
-        if (table.table[i][number] === null) {
-          continue;
-        }
-
-        lastEmptyCell = i - 1;
-
-        break;
-      }
-      if (lastEmptyCell === undefined) {
-        lastEmptyCell = table.table.length - 1;
-      }
-
-      const newTable = table.table;
-
-      player ? (color = 'red') : (color = 'yellow');
-      if (lastEmptyCell >= 0 && lastEmptyCell < newTable.length) {
-        // check if the rank is within the array bounds
-        newTable[lastEmptyCell][number] = color;
-        setTable({ table: newTable });
-
-        if (checkForWin(color, newTable)) {
-          setShowNotification(true);
-          setWinner(color);
-        }
-      }
-
-      if (color === 'red') {
-        setWinningPlayerOne(winningPlayerOne + 1);
       } else {
-        setWinningPlayerTwo(winningPlayerTwo + 1);
+        setSeconds((seconds) => seconds);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (seconds < 0) {
+      setPlayer(!player);
+      setSeconds(30);
+    }
+  }, [seconds]);
+
+  function dropCoin(number) {
+    let lastEmptyCell;
+    let color;
+
+    for (let i = 0; i < table.table.length; i++) {
+      if (table.table[i][number] === null) {
+        continue;
+      }
+
+      lastEmptyCell = i - 1;
+
+      break;
+    }
+    if (lastEmptyCell === undefined) {
+      lastEmptyCell = table.table.length - 1;
+    }
+
+    const newTable = table.table;
+
+    player ? (color = 'red') : (color = 'yellow');
+    if (lastEmptyCell >= 0 && lastEmptyCell < newTable.length) {
+      // check if the rank is within the array bounds
+      newTable[lastEmptyCell][number] = color;
+      setTable({ table: newTable });
+
+      if (checkForWin(color, newTable)) {
+        setShowNotification(true);
+        setWinnerColor(color);
+
+        if (color === 'red') {
+          return setWinningPlayerOne(winningPlayerOne + 1);
+        } else {
+          setWinningPlayerTwo(winningPlayerTwo + 1);
+        }
       }
     }
 
@@ -85,6 +87,7 @@ export default function Table() {
     setSeconds(30);
   }
 
+  // check for win
   function checkForWin(color, table) {
     // Check horizontal
     for (let i = 0; i < table.length; i++) {
@@ -163,7 +166,7 @@ export default function Table() {
 
     setSeconds(30);
     setShowNotification(false);
-    setWinner(null);
+    setWinnerColor(null);
   }
 
   return (
@@ -211,12 +214,17 @@ export default function Table() {
           );
         })}
       </div>
-      <Timer seconds={seconds} />
-      <WinningNotification
-        show={showNotification}
-        winner={winner}
-        restart={restart}
-      />
+      <Timer seconds={seconds} player={player} />
+
+      <img src="/table.svg" className="pseudotable" alt="table"></img>
+
+      {showNotification && (
+        <WinningNotification
+          color={winnerColor}
+          restart={restart}
+          player={player}
+        />
+      )}
     </div>
   );
 }
