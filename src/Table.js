@@ -49,42 +49,45 @@ export default function Table() {
   function dropCoin(number) {
     let lastEmptyCell;
     let color;
+    if (!showNotification) {
+      for (let i = 0; i < table.table.length; i++) {
+        if (table.table[i][number] === null) {
+          continue;
+        }
 
-    for (let i = 0; i < table.table.length; i++) {
-      if (table.table[i][number] === null) {
-        continue;
+        lastEmptyCell = i - 1;
+
+        break;
+      }
+      if (lastEmptyCell === undefined) {
+        lastEmptyCell = table.table.length - 1;
       }
 
-      lastEmptyCell = i - 1;
+      const newTable = table.table;
 
-      break;
-    }
-    if (lastEmptyCell === undefined) {
-      lastEmptyCell = table.table.length - 1;
-    }
+      player ? (color = 'red') : (color = 'yellow');
+      if (lastEmptyCell >= 0 && lastEmptyCell < newTable.length) {
+        // check if the rank is within the array bounds
+        newTable[lastEmptyCell][number] = color;
+        setTable({ table: newTable });
 
-    const newTable = table.table;
+        if (checkForWin(color, newTable)) {
+          setShowNotification(true);
+          setWinnerColor(color);
 
-    player ? (color = 'red') : (color = 'yellow');
-    if (lastEmptyCell >= 0 && lastEmptyCell < newTable.length) {
-      // check if the rank is within the array bounds
-      newTable[lastEmptyCell][number] = color;
-      setTable({ table: newTable });
-
-      if (checkForWin(color, newTable)) {
-        setShowNotification(true);
-        setWinnerColor(color);
-
-        if (color === 'red') {
-          return setWinningPlayerOne(winningPlayerOne + 1);
-        } else {
-          setWinningPlayerTwo(winningPlayerTwo + 1);
+          if (color === 'red') {
+            return setWinningPlayerOne(winningPlayerOne + 1);
+          } else {
+            setWinningPlayerTwo(winningPlayerTwo + 1);
+          }
         }
       }
-    }
 
-    setPlayer(!player);
-    setSeconds(30);
+      setPlayer(!player);
+      setSeconds(30);
+    } else {
+      return;
+    }
   }
 
   // check for win
@@ -175,14 +178,14 @@ export default function Table() {
         restart
       </button>
       <div className="playerone">
-        <p>Player 1 </p>
+        <p>Player 1 Winnings</p>
         <BsFillEmojiSmileFill style={{ color: 'red', fontSize: '40px' }} />
-        {winningPlayerOne}
+        <p>{winningPlayerOne}</p>
       </div>
       <div className="playertwo">
-        <p>Player 2</p>
+        <p>Player 2 Winnings</p>
         <BsFillEmojiSmileFill style={{ color: 'yellow', fontSize: '40px' }} />
-        {winningPlayerTwo}
+        <p>{winningPlayerTwo}</p>
       </div>
 
       <div className="headerRow">
