@@ -222,11 +222,7 @@ export default function Table() {
       <img src="/table.svg" className="pseudotable" alt="table"></img>
 
       {showNotification && (
-        <WinningNotification
-          color={winnerColor}
-          restart={restart}
-          player={player}
-        />
+        <WinningNotification color={winnerColor} restart={restart} />
       )}
     </div>
   );
